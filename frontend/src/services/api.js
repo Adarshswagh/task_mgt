@@ -166,6 +166,186 @@ export function getBaseUrl() {
   return baseUrl || '';
 }
 
+/**
+ * Get all employees
+ * @returns {Promise<object>} - Employees list
+ */
+export async function getEmployees() {
+  return apiRequest('/employees', {
+    method: 'GET',
+  });
+}
+
+/**
+ * Get single employee by ID
+ * @param {number} id - Employee ID
+ * @returns {Promise<object>} - Employee data
+ */
+export async function getEmployee(id) {
+  return apiRequest(`/employees/${id}`, {
+    method: 'GET',
+  });
+}
+
+/**
+ * Create new employee
+ * @param {object} employeeData - Employee data
+ * @param {File|null} document - Optional document file
+ * @returns {Promise<object>} - Create response
+ */
+export async function createEmployee(employeeData, document = null) {
+  const formData = new FormData();
+  
+  Object.keys(employeeData).forEach(key => {
+    if (employeeData[key] !== null && employeeData[key] !== undefined && employeeData[key] !== '') {
+      formData.append(key, employeeData[key]);
+    }
+  });
+  
+  if (document) {
+    formData.append('document', document);
+  }
+
+  return apiRequest('/employees', {
+    method: 'POST',
+    body: formData,
+  });
+}
+
+/**
+ * Update employee
+ * @param {number} id - Employee ID
+ * @param {object} employeeData - Employee data
+ * @param {File|null} document - Optional document file
+ * @returns {Promise<object>} - Update response
+ */
+export async function updateEmployee(id, employeeData, document = null) {
+  const formData = new FormData();
+  
+  Object.keys(employeeData).forEach(key => {
+    if (employeeData[key] !== null && employeeData[key] !== undefined && employeeData[key] !== '') {
+      formData.append(key, employeeData[key]);
+    }
+  });
+  
+  if (document) {
+    formData.append('document', document);
+  }
+
+  return apiRequest(`/employees/${id}`, {
+    method: 'PUT',
+    body: formData,
+  });
+}
+
+/**
+ * Delete employee
+ * @param {number} id - Employee ID
+ * @returns {Promise<object>} - Delete response
+ */
+export async function deleteEmployee(id) {
+  return apiRequest(`/employees/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+/**
+ * Get all projects
+ * @returns {Promise<object>} - Projects list
+ */
+export async function getProjects() {
+  return apiRequest('/projects', {
+    method: 'GET',
+  });
+}
+
+/**
+ * Get single project by ID
+ * @param {number} id - Project ID
+ * @returns {Promise<object>} - Project data
+ */
+export async function getProject(id) {
+  return apiRequest(`/projects/${id}`, {
+    method: 'GET',
+  });
+}
+
+/**
+ * Create new project
+ * @param {object} projectData - Project data
+ * @param {File[]} documents - Array of document files
+ * @returns {Promise<object>} - Create response
+ */
+export async function createProject(projectData, documents = []) {
+  const formData = new FormData();
+  
+  Object.keys(projectData).forEach(key => {
+    if (projectData[key] !== null && projectData[key] !== undefined && projectData[key] !== '') {
+      formData.append(key, projectData[key]);
+    }
+  });
+  
+  // Append multiple documents
+  documents.forEach((file, index) => {
+    formData.append('documents[]', file);
+  });
+
+  return apiRequest('/projects', {
+    method: 'POST',
+    body: formData,
+  });
+}
+
+/**
+ * Update project
+ * @param {number} id - Project ID
+ * @param {object} projectData - Project data
+ * @param {File[]} documents - Array of additional document files
+ * @returns {Promise<object>} - Update response
+ */
+export async function updateProject(id, projectData, documents = []) {
+  const formData = new FormData();
+  
+  Object.keys(projectData).forEach(key => {
+    if (projectData[key] !== null && projectData[key] !== undefined && projectData[key] !== '') {
+      formData.append(key, projectData[key]);
+    }
+  });
+  
+  // Append additional documents
+  documents.forEach((file) => {
+    formData.append('documents[]', file);
+  });
+
+  return apiRequest(`/projects/${id}`, {
+    method: 'PUT',
+    body: formData,
+  });
+}
+
+/**
+ * Delete project
+ * @param {number} id - Project ID
+ * @returns {Promise<object>} - Delete response
+ */
+export async function deleteProject(id) {
+  return apiRequest(`/projects/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+/**
+ * Delete project document
+ * @param {number} projectId - Project ID
+ * @param {number} documentId - Document ID
+ * @returns {Promise<object>} - Delete response
+ */
+export async function deleteProjectDocument(projectId, documentId) {
+  return apiRequest(`/projects/${projectId}/documents/${documentId}`, {
+    method: 'DELETE',
+  });
+}
+
 export default {
   login,
   register,
@@ -173,5 +353,16 @@ export default {
   getCurrentUser,
   updateProfile,
   getBaseUrl,
+  getEmployees,
+  getEmployee,
+  createEmployee,
+  updateEmployee,
+  deleteEmployee,
+  getProjects,
+  getProject,
+  createProject,
+  updateProject,
+  deleteProject,
+  deleteProjectDocument,
 };
 
